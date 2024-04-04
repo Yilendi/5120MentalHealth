@@ -35,7 +35,7 @@ fun InputDialog(
                 TextField(
                     value = text,
                     onValueChange = { text = it },
-                    label = { Text("Enter Symptoms") }
+                    label = { Text("Enter Here") }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
