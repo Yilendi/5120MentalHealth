@@ -81,6 +81,9 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
 
     var currentIndex by remember { mutableStateOf(0) }
 
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedNumber by remember { mutableStateOf(1) }
+
     // Arrays for texts based on index
     val smallTexts = arrayOf(
         "Based on your recent medicine intake updates, we recommend recording your mood. Adding notes while journaling helps on reflecting back.\n\nThis will aid share information with your doctor.",
@@ -134,7 +137,22 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                 updateIndex = { newIndex ->
                     currentIndex = newIndex // Update your state with the new index
                 },
-                buttonTexts = buttonTexts // Example button texts
+                buttonTexts = buttonTexts, // Example button texts
+                onAdditionalAction = {
+                    showDialog = true
+                }
+
+            )
+
+            NumberPickerDialog(
+                showDialog = showDialog,
+                onNumberSelected = { number ->
+                    selectedNumber = number
+                },
+                onDismiss = {
+                    showDialog = false
+                    if (currentIndex < buttonTexts.size - 1) currentIndex++
+                }
             )
 
             Spacer(modifier = Modifier.height(121.dp))
@@ -161,9 +179,9 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                     Spacer(modifier = Modifier.width(48.dp)) // Keep layout balanced
                 }
 
-                if (currentIndex in 0..2) {
+                if (currentIndex in 1..2) {
                     Text(
-                        text = if (currentIndex < 3) "Next" else "",
+                        text = "Next",
                         color = Color(0xFF07C0BA),
                         modifier = Modifier
                             .clickable { if (currentIndex < 3) currentIndex += 1 }
@@ -188,7 +206,8 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
 fun CustomButton(
     currentIndex: Int,
     updateIndex: (Int) -> Unit,
-    buttonTexts: Array<String>
+    buttonTexts: Array<String>,
+    onAdditionalAction: () -> Unit
 ) {
     if (currentIndex == 0) {
         Button(
@@ -202,9 +221,7 @@ fun CustomButton(
     } else {
         OutlinedButton(
             onClick = {
-                if (currentIndex < buttonTexts.size - 1) updateIndex(currentIndex + 1)
-                // You might want to handle the action for the last index differently
-                else updateIndex(currentIndex) // Or any other final action
+                if (currentIndex < 3) onAdditionalAction()
             },
             modifier = Modifier
                 .size(width = 241.dp, height = 46.dp),

@@ -229,7 +229,7 @@ fun InsightOverview() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(437.dp)
+            .wrapContentHeight()
             .background(Color(0xFFD1FAF2)) // Customizable background color
     ) {
         Column(
@@ -262,6 +262,9 @@ fun insightDetails() {
             .clip(RoundedCornerShape(8.dp)) // Rounded corners
             .background(Color.White) // White background
     ) {
+        var showDialog by remember { mutableStateOf(false) }
+        SummaryDialog(showDialog = showDialog, onDismiss = { showDialog = false })
+
         Column(modifier = Modifier.padding(16.dp)) { // Add padding inside the box
             // Highlights
             Text("Highlights", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
@@ -269,14 +272,13 @@ fun insightDetails() {
 
             // Summary
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Summary", style = MaterialTheme.typography.subtitle1)
-//            TextWithRoundIconButton( "Summary", "right", {})
+//            Text("Summary", style = MaterialTheme.typography.subtitle1)
+            TextWithRoundIconButton( "Summary", "right", { showDialog = true })
             Divider()
 
             // Activity
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Activity", style = MaterialTheme.typography.subtitle1)
-            Divider()
+            TextWithRoundIconButton( "Activity", "right", {})
 
             // Other Data
             Spacer(modifier = Modifier.height(8.dp))
@@ -285,13 +287,14 @@ fun insightDetails() {
 
             // Factors
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Factors", style = MaterialTheme.typography.subtitle1)
+            TextWithRoundIconButton( "Factors", "right", {})
 
             // Detailed text
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "You usually start feeling low in the afternoon. You stop feeling hungry if you skip your medicine.",
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }
