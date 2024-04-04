@@ -1,9 +1,11 @@
 package com.example.cis5120mentalhealth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,8 +31,13 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,7 +86,7 @@ fun MoodScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(28.dp)) // Space between the text box and the next box
 
-            CustomBoxWithContent()
+            MoodOverview()
 
             Spacer(modifier = Modifier.height(40.dp)) // Space between boxes
 
@@ -91,7 +98,12 @@ fun MoodScreen(navController: NavController) {
 }
 
 @Composable
-fun CustomBoxWithContent() {
+fun MoodOverview() {
+    var symptomsText by remember { mutableStateOf("Your Symptoms Here") }
+    var showSymptomsDialog by remember { mutableStateOf(false) }
+
+    var notesText by remember { mutableStateOf("Your Notes Here") }
+    var showNotesDialog by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .width(345.dp)
@@ -116,7 +128,13 @@ fun CustomBoxWithContent() {
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Your symptoms here", style = MaterialTheme.typography.body1)
+            TextWithRoundIconButton(
+                text = symptomsText,
+                iconType = "add",
+                onIconClick = {showSymptomsDialog = true}
+            )
+
+
 
             Spacer(modifier = Modifier.height(28.dp))
 
@@ -125,15 +143,42 @@ fun CustomBoxWithContent() {
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Your notes here", style = MaterialTheme.typography.body1)
+            TextWithRoundIconButton(
+                text = notesText,
+                iconType = "write",
+                onIconClick = {showNotesDialog = true}
+            )
+
+            if (showSymptomsDialog) {
+                InputDialog(
+                    initialText = symptomsText,
+                    onDismiss = { showSymptomsDialog = false }, // Hide the dialog on dismiss
+                    onConfirm = { newText ->
+                        symptomsText = newText // Update the symptoms text
+                        showSymptomsDialog = false // Hide the dialog after confirming
+                    }
+                )
+            }
+
+            if (showNotesDialog) {
+                InputDialog(
+                    initialText = notesText,
+                    onDismiss = { showNotesDialog = false }, // Hide the dialog on dismiss
+                    onConfirm = { newText ->
+                        notesText = newText // Update the symptoms text
+                        showNotesDialog = false // Hide the dialog after confirming
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
 fun ScrollableEmojisRow() {
-    // List of emojis or text you want to display
     val emojiList = listOf("\uD83D\uDE28", "\uD83D\uDE29", "\uD83D\uDE41", "\uD83D\uDE10", "\uD83D\uDE42", "\uD83D\uDE03")
+    // State to track the selected emoji
+    var selectedEmoji by remember { mutableStateOf<String?>(null) }
 
     Row(
         modifier = Modifier
@@ -141,32 +186,43 @@ fun ScrollableEmojisRow() {
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        emojiList.forEachIndexed { index, emoji ->
+        emojiList.forEach { emoji ->
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 0.dp)
+                    .padding(8.dp)
                     .size(56.dp)
-                    .shadow(elevation = 4.dp, shape = CircleShape, clip = false)
-                    .background(Color.Transparent, shape = CircleShape)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    // Change the background color if the emoji is selected
+                    .background(if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color.Transparent)
+                    .clickable { selectedEmoji = emoji } // Update the selected emoji on click
+                    .shadow(4.dp, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = emoji,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.Center), // Ensure the text is centered
-                    fontSize = 28.sp // Adjust the font size to fit within the circle
+                    fontSize = 28.sp
                 )
             }
-            if (index < emojiList.size - 1) {
-                Spacer(modifier = Modifier.width(16.dp))
-            }
         }
-        Spacer(modifier = Modifier.width(16.dp))
-        RoundIconButton(iconType = "add", onClick = {})
+        // Add button to the row
+        IconButton(
+            onClick = { /* Define what happens when you click the add button */ },
+            modifier = Modifier
+                .size(26.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFEFEBE1)),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add",
+                tint = Color.Black,
+                modifier = Modifier.size(18.dp)
+            )
+        }
     }
 }
+
 
 @Composable
 fun InsightOverview() {
@@ -281,15 +337,15 @@ fun RoundIconButton(iconType: String, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier
             .size(26.dp) // Specify the desired size for the icon button.
-            .clip(CircleShape)
-            .background(Color(0xFFEFEBE1)), // Or any specific color you need
-        // Adjust padding to shrink the touch target, if necessary
+            .clip(CircleShape),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEFEBE1)),
+        contentPadding = PaddingValues(0.dp),// Set the background color
     ) {
         Icon(
             imageVector = icon,
             contentDescription = iconType,
             tint = Color.Black, // Adjust the icon color as needed
-            modifier = Modifier.size(18.dp) // Adjust the icon size within the button if needed
+            modifier = Modifier.size(16.dp) // Adjust the icon size within the button if needed
         )
     }
 }
