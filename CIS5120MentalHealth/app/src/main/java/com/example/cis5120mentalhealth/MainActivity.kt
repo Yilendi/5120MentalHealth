@@ -75,22 +75,24 @@ fun mainAppGraph(navController: NavHostController) {
         }
     }
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) },
-        // Set the Scaffold's background color
-//        modifier = Modifier.imePadding(),
-//        backgroundColor = DarkChatDesignerColorPalette.uiBackground
+        bottomBar = { BottomNavigationBar(navController) }
     ) {
         paddingValues ->
         NavHost(navController = navController, startDestination = "home", modifier = Modifier.padding(paddingValues)) {
             composable("home") {
 
-                HomeScreenView()
+                HomeScreenView(navController)
             }
             composable("summary") {
                 MoodTrackerView()
             }
             composable("sharing") {
                 SharingScreen()
+            }
+
+            composable("mood") {
+//                MoodScreen(navController)
+                MoodScreenWithOverlay(navController)
             }
 
 

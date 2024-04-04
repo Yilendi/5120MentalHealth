@@ -70,5 +70,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.compose.material:material: 1.6.5")
     implementation ("com.github.madrapps:plot:0.1.1")
+    implementation ("androidx.compose.material:material-icons-extended:1.1.1")
 
 }
