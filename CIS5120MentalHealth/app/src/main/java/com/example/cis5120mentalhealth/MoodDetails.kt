@@ -1,6 +1,5 @@
 package com.example.cis5120mentalhealth
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -25,7 +24,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,8 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -83,7 +84,7 @@ fun MoodScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(40.dp)) // Space between boxes
 
             // Another box that is 437 high, max width
-            CustomLayoutBox()
+            InsightOverview()
 
         }
     }
@@ -100,9 +101,9 @@ fun CustomBoxWithContent() {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // "mood" section
-            Text("Mood", style = MaterialTheme.typography.subtitle1)
+            Text("Mood", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
-            Divider()
+            Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
 
             // Scrollable row of images
@@ -111,18 +112,18 @@ fun CustomBoxWithContent() {
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Symptoms" section
-            Text("Symptoms", style = MaterialTheme.typography.subtitle1)
+            Text("Symptoms", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
-            Divider()
+            Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
             Text("Your symptoms here", style = MaterialTheme.typography.body1)
 
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Notes" section
-            Text("Notes", style = MaterialTheme.typography.subtitle1)
+            Text("Notes", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
-            Divider()
+            Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
             Text("Your notes here", style = MaterialTheme.typography.body1)
         }
@@ -137,7 +138,8 @@ fun ScrollableEmojisRow() {
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         emojiList.forEachIndexed { index, emoji ->
             Box(
@@ -161,11 +163,13 @@ fun ScrollableEmojisRow() {
                 Spacer(modifier = Modifier.width(16.dp))
             }
         }
+        Spacer(modifier = Modifier.width(16.dp))
+        RoundIconButton(iconType = "add", onClick = {})
     }
 }
 
 @Composable
-fun CustomLayoutBox() {
+fun InsightOverview() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,12 +208,13 @@ fun insightDetails() {
     ) {
         Column(modifier = Modifier.padding(16.dp)) { // Add padding inside the box
             // Highlights
-            Text("Highlights", style = MaterialTheme.typography.subtitle1)
+            Text("Highlights", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Divider()
 
             // Summary
             Spacer(modifier = Modifier.height(8.dp))
             Text("Summary", style = MaterialTheme.typography.subtitle1)
+//            TextWithRoundIconButton( "Summary", "right", {})
             Divider()
 
             // Activity
@@ -219,7 +224,7 @@ fun insightDetails() {
 
             // Other Data
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Other Data", style = MaterialTheme.typography.subtitle1)
+            Text("Other Data", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Divider()
 
             // Factors
@@ -237,5 +242,57 @@ fun insightDetails() {
 
 
 }
+
+@Composable
+fun TextWithRoundIconButton(
+    text: String,
+    iconType: String,
+    onIconClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(8.dp) // Adjust padding as needed
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.subtitle1 // You can make this color customizable by passing it as a parameter too
+        )
+
+        Spacer(modifier = Modifier.weight(1f)) // Space between text and button
+
+        // RoundIconButton reused here
+        RoundIconButton(
+            iconType = iconType,
+            onClick = onIconClick
+        )
+    }
+}
+
+@Composable
+fun RoundIconButton(iconType: String, onClick: () -> Unit) {
+    val icon = when (iconType.lowercase()) {
+        "add" -> Icons.Default.Add
+        "write" -> Icons.Default.Edit // Assuming "write" refers to an edit action
+        "right" -> Icons.Default.ArrowForward
+        else -> Icons.Default.Add // Default or fallback icon
+    }
+
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .size(26.dp) // Specify the desired size for the icon button.
+            .clip(CircleShape)
+            .background(Color(0xFFEFEBE1)), // Or any specific color you need
+        // Adjust padding to shrink the touch target, if necessary
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = iconType,
+            tint = Color.Black, // Adjust the icon color as needed
+            modifier = Modifier.size(18.dp) // Adjust the icon size within the button if needed
+        )
+    }
+}
+
 
 

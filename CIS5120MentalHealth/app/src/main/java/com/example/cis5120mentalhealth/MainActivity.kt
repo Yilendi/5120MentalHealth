@@ -91,8 +91,11 @@ fun mainAppGraph(navController: NavHostController) {
             }
 
             composable("mood") {
-//                MoodScreen(navController)
                 MoodScreenWithOverlay(navController)
+            }
+
+            composable("browse") {
+
             }
 
 
@@ -104,8 +107,10 @@ fun mainAppGraph(navController: NavHostController) {
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
         NavigationItem("home", "Home", painterResource(R.drawable.icon_home)),
+        NavigationItem("browse", "Browse", painterResource(R.drawable.icon_browse)),
         NavigationItem("summary", "Summary", painterResource(R.drawable.icon_summary)),
-        NavigationItem("sharing", "Sharing", painterResource(R.drawable.icon_sharing))
+        NavigationItem("sharing", "Sharing", painterResource(R.drawable.icon_sharing)),
+
     )
 
     BottomNavigation(

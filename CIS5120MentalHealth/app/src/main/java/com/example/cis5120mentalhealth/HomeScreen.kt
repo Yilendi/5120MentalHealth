@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -15,6 +16,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.cis5120mentalhealth.ui.theme.CIS5120MentalHealthTheme
 
 @Composable
 fun HomeScreenView(navController: NavController) {
@@ -171,18 +174,34 @@ fun ExpandableContent() {
     var nightChecked by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(start = 40.dp, end = 12.dp)) {
-        Text("Morning")
-        Divider(modifier = Modifier.width(291.dp).padding(vertical = 4.dp))
+        Text(
+            "Morning",
+            color = Color(0xFF07C0BA)
+        )
+        Divider(
+            modifier = Modifier
+                .width(291.dp)
+                .padding(vertical = 4.dp),
+            color = Color(0xFF07C0BA)
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Nexito 10mg")
             Spacer(Modifier.weight(1f))
             Checkbox(
                 checked = morningChecked,
-                onCheckedChange = { morningChecked = it } // Update state when checkbox is toggled
+                onCheckedChange = { morningChecked = it }
             )
         }
-        Text("Night")
-        Divider(modifier = Modifier.width(291.dp).padding(vertical = 4.dp))
+        Text(
+            "Night",
+            color = Color(0xFF07C0BA)
+        )
+        Divider(
+            modifier = Modifier
+                .width(291.dp)
+                .padding(vertical = 4.dp),
+            color = Color(0xFF07C0BA)
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Escitalopram 15mg")
             Spacer(Modifier.weight(1f))
