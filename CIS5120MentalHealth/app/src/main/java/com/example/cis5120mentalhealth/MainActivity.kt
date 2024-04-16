@@ -95,7 +95,7 @@ fun mainAppGraph(navController: NavHostController) {
             }
 
             composable("browse") {
-
+                SharingScreen()
             }
 
 
