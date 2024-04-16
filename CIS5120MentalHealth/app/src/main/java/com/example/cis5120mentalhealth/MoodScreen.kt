@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MoodScreenWithOverlay(navController: NavController) {
+fun MoodScreenWithOverlay(viewModel: SymptomsViewModel, navController: NavController) {
 
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Expanded)
     val scope = rememberCoroutineScope()
@@ -72,7 +72,7 @@ fun MoodScreenWithOverlay(navController: NavController) {
         },
         scrimColor = Color.Transparent
     ) {
-        MoodScreen(navController)
+        MoodScreen(viewModel, navController)
     }
 }
 

@@ -1,9 +1,11 @@
 package com.example.cis5120mentalhealth
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,10 +63,12 @@ fun Navigation() {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun mainAppGraph(navController: NavHostController) {
     // Observes changes in the back stack and gets the current back stack entry
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val viewModel : SymptomsViewModel = viewModel()
 
     // Function to toggle the popup visibility
     // Side-effect to log changes in navigation
@@ -91,7 +95,11 @@ fun mainAppGraph(navController: NavHostController) {
             }
 
             composable("mood") {
-                MoodScreenWithOverlay(navController)
+                MoodScreenWithOverlay(viewModel, navController)
+            }
+
+            composable("symptoms") {
+                SymptomsScreen(viewModel, navController)
             }
 
             composable("browse") {

@@ -3,6 +3,7 @@ package com.example.cis5120mentalhealth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,7 +50,7 @@ import androidx.navigation.NavController
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MoodScreen(navController: NavController) {
+fun MoodScreen(viewModel: SymptomsViewModel, navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -64,43 +65,64 @@ fun MoodScreen(navController: NavController) {
             )
         }
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally // Center elements horizontally
+                .padding(innerPadding)  // Apply the padding passed to the function
+                .fillMaxWidth()  // Ensure the column takes up the full width available
+                .verticalScroll(rememberScrollState()),  // Allow the column to scroll vertically
+            horizontalAlignment = Alignment.CenterHorizontally  // Center children horizontally
         ) {
-            // Your mood tracking screen content goes here
-            Box(
-                modifier = Modifier
-                    .size(width = 344.dp, height = 78.dp)
-            ) {
-                Column {
-                    Text("How are you feeling?", style = MaterialTheme.typography.h6)
-                    Spacer(modifier = Modifier.height(4.dp)) // Space between large and small text
-                    Text("Record your mood and add notes. " +
-                            "You can use this to share information with your doctor. ",
-                        style = MaterialTheme.typography.body2)
+                // Your mood tracking screen content goes here
+                Box(
+                    modifier = Modifier
+                        .size(width = 344.dp, height = 78.dp)
+                ) {
+                    Column {
+                        Text("How are you feeling?", style = MaterialTheme.typography.h6)
+                        Spacer(modifier = Modifier.height(4.dp)) // Space between large and small text
+                        Text(
+                            "Record your mood and add notes. " +
+                                    "You can use this to share information with your doctor. ",
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(28.dp)) // Space between the text box and the next box
+
+                MoodOverview(viewModel = viewModel, navController = navController)
+
+                Spacer(modifier = Modifier.height(40.dp)) // Space between boxes
+
+                // Another box that is 437 high, max width
+//            InsightOverview()
+                SummaryCard(
+                    item = ItemDetails(
+                        title = "Summary",
+                        description = "Insights on the medication cycle.",
+                        imageName = "\uD83D\uDCCB", // Assuming this is the name of an image in your drawable resources,
+                        action = "go"
+                    )
+                )
             }
 
-            Spacer(modifier = Modifier.height(28.dp)) // Space between the text box and the next box
-
-            MoodOverview()
-
-            Spacer(modifier = Modifier.height(40.dp)) // Space between boxes
-
-            // Another box that is 437 high, max width
-            InsightOverview()
-
-        }
     }
 }
 
 @Composable
-fun MoodOverview() {
-    var symptomsText by remember { mutableStateOf("Your Symptoms Here") }
-    var showSymptomsDialog by remember { mutableStateOf(false) }
+fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
+    // Combine both groups into one list of pairs for easier manipulation
+    val combinedSymptoms = (viewModel.symptomsGroup1 zip viewModel.checkedStatesGroup1.values) +
+            (viewModel.symptomsGroup2 zip viewModel.checkedStatesGroup2.values)
+
+    // Filter out the checked symptoms and take only the first three
+    val checkedSymptoms = combinedSymptoms.filter { it.second }.map { it.first }.take(3)
+
+    // Create a string that contains the names of up to three checked symptoms
+    val symptomsText = if (checkedSymptoms.isEmpty()) "Symptoms" else checkedSymptoms.joinToString(", ")
+
+//    var showSymptomsDialog by remember { mutableStateOf(false) }
 
     var notesText by remember { mutableStateOf("Your Notes Here") }
     var showNotesDialog by remember { mutableStateOf(false) }
@@ -124,14 +146,14 @@ fun MoodOverview() {
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Symptoms" section
-            Text("Symptoms", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
+            Text("Symptoms ... ", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
             TextWithRoundIconButton(
                 text = symptomsText,
                 iconType = "add",
-                onIconClick = {showSymptomsDialog = true}
+                onIconClick = {navController.navigate("symptoms")}
             )
 
 
@@ -149,16 +171,16 @@ fun MoodOverview() {
                 onIconClick = {showNotesDialog = true}
             )
 
-            if (showSymptomsDialog) {
-                InputDialog(
-                    initialText = symptomsText,
-                    onDismiss = { showSymptomsDialog = false }, // Hide the dialog on dismiss
-                    onConfirm = { newText ->
-                        symptomsText = newText // Update the symptoms text
-                        showSymptomsDialog = false // Hide the dialog after confirming
-                    }
-                )
-            }
+//            if (showSymptomsDialog) {
+//                InputDialog(
+//                    initialText = symptomsText,
+//                    onDismiss = { showSymptomsDialog = false }, // Hide the dialog on dismiss
+//                    onConfirm = { newText ->
+//                        symptomsText = newText // Update the symptoms text
+//                        showSymptomsDialog = false // Hide the dialog after confirming
+//                    }
+//                )
+//            }
 
             if (showNotesDialog) {
                 InputDialog(

@@ -16,6 +16,8 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -105,6 +107,12 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
 
     var isExpanded by remember { mutableStateOf(false) }
 
+    val iconImage = when {
+        item.action == "add" && isExpanded -> Icons.Default.Remove
+        item.action == "add" && !isExpanded -> Icons.Default.Add
+        else -> Icons.Default.ChevronRight
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,8 +153,10 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
                 }
 
                 Icon(
-                    imageVector = if (item.action == "add") Icons.Default.Add else Icons.Default.ChevronRight, // Plus sign icon
-                    contentDescription = "Add",
+                    imageVector = iconImage,
+                    contentDescription = if (item.action == "add") {
+                        if (isExpanded) "Collapse" else "Expand"
+                    } else "Navigate",
                     modifier = Modifier
                         .padding(end = 12.dp) // Padding from the end of the Card
                         .size(26.dp) // Size of the icon
