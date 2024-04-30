@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetState
@@ -56,9 +57,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -120,15 +123,20 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
+                                .wrapContentHeight()
                         ) {
-                            Text(
-                                "Symptoms",
-                                modifier = Modifier.weight(1f)
-                            )
-                            TextButton(onClick = { /* TODO: Implement navigation */ }) {
-                                Text("Create your own")
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 91.dp, height = 26.dp)
+                                    .background(Color(0xFFEFEBE1), RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Symptoms", color = Color.Black, style = MaterialTheme.typography.body2)
                             }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text("Create your own")
                         }
+                        Spacer(modifier = Modifier.height(24.dp))
                         Text(
                             "Recent",
                             style = MaterialTheme.typography.subtitle1,
@@ -244,7 +252,9 @@ fun SummaryCard(item: ItemDetails) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = item.title,
-                                style = MaterialTheme.typography.body1
+                                style = MaterialTheme.typography.body1.copy(
+                                    fontSize = 22.sp              // Increases the font size; adjust as needed
+                                ),
                             )
                         }
                         // Assuming item.description might contain multiple lines.

@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -120,7 +121,12 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
     val checkedSymptoms = combinedSymptoms.filter { it.second }.map { it.first }.take(3)
 
     // Create a string that contains the names of up to three checked symptoms
-    val symptomsText = if (checkedSymptoms.isEmpty()) "Symptoms" else checkedSymptoms.joinToString(", ")
+    val symptomsText = when {
+        checkedSymptoms.isEmpty() -> ""
+        checkedSymptoms.size <= 2 -> checkedSymptoms.joinToString(", ")
+        else -> "${checkedSymptoms.take(2).joinToString(", ")} (+${checkedSymptoms.size - 2} more)"
+    }
+
 
 //    var showSymptomsDialog by remember { mutableStateOf(false) }
 
@@ -133,7 +139,22 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             .background(Color(0xFFFAF7EF)) // Hex color code for background
             .clip(RoundedCornerShape(14.dp))
     ) {
+        Box(
+            modifier = Modifier
+                .padding(start = 12.dp, top = 12.dp)
+                .size(width = 91.dp, height = 26.dp)
+                .background(Color.Black, RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "2 OF 14 DAYS",
+                color = Color.White,
+                style = MaterialTheme.typography.body2.copy(fontSize = 12.sp)  // Smaller font size
+            )
+        }
+
         Column(modifier = Modifier.padding(16.dp)) {
+            Spacer(modifier = Modifier.height(46.dp))
             // "mood" section
             Text("Mood", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
@@ -146,14 +167,14 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Symptoms" section
-            Text("Symptoms ... ", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
+            Text("Other Symptoms", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
-            TextWithRoundIconButton(
-                text = symptomsText,
-                iconType = "add",
-                onIconClick = {navController.navigate("symptoms")}
+
+            TextWithDynamicButton(
+                buttonText = symptomsText,  // This is the input text that determines the button's state
+                onTextClick= {navController.navigate("symptoms")}
             )
 
 
@@ -161,7 +182,7 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Notes" section
-            Text("Notes", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
+            Text("Add Notes", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
@@ -170,17 +191,6 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
                 iconType = "write",
                 onIconClick = {showNotesDialog = true}
             )
-
-//            if (showSymptomsDialog) {
-//                InputDialog(
-//                    initialText = symptomsText,
-//                    onDismiss = { showSymptomsDialog = false }, // Hide the dialog on dismiss
-//                    onConfirm = { newText ->
-//                        symptomsText = newText // Update the symptoms text
-//                        showSymptomsDialog = false // Hide the dialog after confirming
-//                    }
-//                )
-//            }
 
             if (showNotesDialog) {
                 InputDialog(
@@ -198,7 +208,15 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
 
 @Composable
 fun ScrollableEmojisRow() {
-    val emojiList = listOf("\uD83D\uDE28", "\uD83D\uDE29", "\uD83D\uDE41", "\uD83D\uDE10", "\uD83D\uDE42", "\uD83D\uDE03")
+    val emojiList = listOf(
+        "\uD83D\uDE42" to "Happy",
+        "\uD83D\uDE03" to "Calm",
+        "\uD83D\uDE10" to "Moody",
+        "\uD83D\uDE28" to "Dizzy",
+        "\uD83D\uDE29" to "Weary",
+        "\uD83D\uDE41" to "Disturbed"
+
+    )
     // State to track the selected emoji
     var selectedEmoji by remember { mutableStateOf<String?>(null) }
 
@@ -208,22 +226,32 @@ fun ScrollableEmojisRow() {
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        emojiList.forEach { emoji ->
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(56.dp)
-                    .clip(CircleShape)
-                    // Change the background color if the emoji is selected
-                    .background(if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color.Transparent)
-                    .clickable { selectedEmoji = emoji } // Update the selected emoji on click
-                    .shadow(4.dp, CircleShape),
-                contentAlignment = Alignment.Center
+        emojiList.forEach { (emoji, description) ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = 4.dp)  // Half of 8dp to get even spacing on both sides
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(CircleShape)
+                        .background(if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color.Transparent)
+                        .clickable { selectedEmoji = emoji }
+                        .shadow(4.dp, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = emoji,
+                        fontSize = 28.sp
+                    )
+                }
+                // Description text under the emoji
                 Text(
-                    text = emoji,
+                    text = description,
                     textAlign = TextAlign.Center,
-                    fontSize = 28.sp
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -246,83 +274,6 @@ fun ScrollableEmojisRow() {
 }
 
 
-@Composable
-fun InsightOverview() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .background(Color(0xFFD1FAF2)) // Customizable background color
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(24.dp)
-                .fillMaxSize()
-        ) {
-            Text(
-                text = "Insights",
-                style = MaterialTheme.typography.h5.copy(color = Color.Black) // Large, black text
-            )
-            Spacer(modifier = Modifier.height(8.dp)) // Space between the title and small text
-
-            Text(
-                text = "Here are some insights based on your tracking.",
-                style = MaterialTheme.typography.body2 // Small text
-            )
-            Spacer(modifier = Modifier.height(28.dp)) // Space before the white box
-
-            insightDetails()
-        }
-    }
-}
-
-@Composable
-fun insightDetails() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize() // Takes the remaining space
-            .clip(RoundedCornerShape(8.dp)) // Rounded corners
-            .background(Color.White) // White background
-    ) {
-        var showDialog by remember { mutableStateOf(false) }
-        SummaryDialog(showDialog = showDialog, onDismiss = { showDialog = false })
-
-        Column(modifier = Modifier.padding(16.dp)) { // Add padding inside the box
-            // Highlights
-            Text("Highlights", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
-            Divider()
-
-            // Summary
-            Spacer(modifier = Modifier.height(8.dp))
-//            Text("Summary", style = MaterialTheme.typography.subtitle1)
-            TextWithRoundIconButton( "Summary", "right", { showDialog = true })
-            Divider()
-
-            // Activity
-            Spacer(modifier = Modifier.height(8.dp))
-            TextWithRoundIconButton( "Activity", "right", {})
-
-            // Other Data
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Other Data", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
-            Divider()
-
-            // Factors
-            Spacer(modifier = Modifier.height(8.dp))
-            TextWithRoundIconButton( "Factors", "right", {})
-
-            // Detailed text
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                "You usually start feeling low in the afternoon. You stop feeling hungry if you skip your medicine.",
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
-    }
-
-
-}
 
 @Composable
 fun TextWithRoundIconButton(
@@ -346,6 +297,45 @@ fun TextWithRoundIconButton(
             iconType = iconType,
             onClick = onIconClick
         )
+    }
+}
+
+@Composable
+fun TextWithDynamicButton(
+    buttonText: String,  // This is the input text that determines the button's state
+    onTextClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "Symptoms",
+            style = MaterialTheme.typography.subtitle1,
+            color = Color.Black  // Customize color as needed
+        )
+
+        Spacer(modifier = Modifier.weight(1f)) // Space between text and button or clickable text
+
+        if (buttonText.isNotEmpty()) {
+            // If buttonText is non-empty, display it as clickable text
+            Text(
+                text = buttonText,
+                style = MaterialTheme.typography.button,  // Use button style for clickable text
+                color = Color.Black,  // Use theme's primary color for the text
+                modifier = Modifier
+                    .clickable(onClick = onTextClick)
+                    .padding(vertical = 8.dp)  // Padding for clickable area
+            )
+        } else {
+            // If buttonText is empty, show a default RoundIconButton
+            RoundIconButton(
+                iconType = "add",  // Assuming you have a default icon type
+                onClick = onTextClick
+            )
+        }
     }
 }
 

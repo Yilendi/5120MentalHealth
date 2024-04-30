@@ -4,7 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
@@ -16,6 +19,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -31,6 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -52,10 +58,17 @@ fun HomeScreenView(navController: NavController) {
         imageName = "\uD83D\uDC8A", // Assuming this is the name of an image in your drawable resources
         action = "go"
     )
+
+    var showCard by remember { mutableStateOf(true) }
+
+
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .verticalScroll(scrollState) // Makes the Column scrollable
+            .padding(24.dp)  // Apply padding to the overall Column
     ) {
         // Top Box - Greeting
         Box(
@@ -66,12 +79,12 @@ fun HomeScreenView(navController: NavController) {
             Column {
                 Text(
                     text = "Good Afternoon, ",
-                    fontSize = 24.sp,
+                    fontSize = 28.sp,
                     color = Color.Black // Keeps the default color for the initial part
                 )
                 Text(
                     text = "Sarina!",
-                    fontSize = 24.sp,
+                    fontSize = 28.sp,
                     color = Color(0xFF07C0BA) // Changes Sarina's name to green
                 )
                 Spacer( Modifier.weight(1f))
@@ -86,7 +99,16 @@ fun HomeScreenView(navController: NavController) {
         }
         Spacer(Modifier.height(40.dp))
 
+        if (showCard) {
+             ProgressCard(
+                onClose = {
+                    // Set the state to false when the close icon is clicked
+                    showCard = false
+                }
+            )
+        }
 
+        Spacer(Modifier.height(32.dp))
         // First Card
         HealthCard(item, navController)
 
@@ -97,6 +119,72 @@ fun HomeScreenView(navController: NavController) {
         HealthCard(item2, navController)
     }
 }
+
+
+@Composable
+fun ProgressCard(onClose: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(210.dp),
+        shape = RoundedCornerShape(12.dp), // Rounded corners
+        elevation = 2.dp,
+        backgroundColor = Color(0xFFFAF7EF)
+    ) {
+        Box {
+            // Blue square with text
+            Box(
+                modifier = Modifier
+                    .padding(start = 12.dp, top = 12.dp)
+                    .size(width = 81.dp, height = 26.dp)
+                    .background(Color(0xFFD1FAF2), RoundedCornerShape(4.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Progress", color = Color.Black, style = MaterialTheme.typography.body2)
+            }
+
+            // Icon for closing the card
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Close",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 12.dp, end = 12.dp)
+                    .size(24.dp)
+                    .clickable { onClose() }
+            )
+
+            // Image vector with text below it
+            Image(
+                painter = painterResource(id = R.drawable.encouragement_notification), // Replace with your actual drawable ID
+                contentDescription = "Encouragement",
+                modifier = Modifier
+                    .padding(start = 128.dp, top = 50.dp)
+                    .size(width = 98.dp, height = 98.dp)
+            )
+
+            // Text below the image vector
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(top = 150.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Well done!",
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center  // Ensures text is centered if it wraps to a new line
+                )
+
+                Text(
+                    "One more mood tracking check-in complete!",
+                    style = MaterialTheme.typography.body2
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
 fun HealthCard(item: ItemDetails, navController: NavController) {
@@ -117,16 +205,16 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .height(if (isExpanded) 232.dp else 82.dp), // Adjust height based on expanded state
+            .height(if (isExpanded) 232.dp else 86.dp), // Adjust height based on expanded state
         elevation = 2.dp,
         backgroundColor = Color(0xFFFAF7EF)
     ) {
         Column {
-            Row(modifier = Modifier.height(82.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.height(86.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 10.dp, top = 12.dp, end = 54.dp, bottom = 12.dp)
+                        .padding(start = 10.dp, top = 12.dp, bottom = 12.dp)
                 ) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -137,7 +225,9 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = item.title,
-                                style = MaterialTheme.typography.body1
+                                style = MaterialTheme.typography.body1.copy(
+                                    fontSize = 20.sp              // Increases the font size; adjust as needed
+                                ),
                             )
                         }
                         // Assuming item.description might contain multiple lines.
@@ -146,7 +236,7 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
                             Text(
                                 text = line,
                                 style = MaterialTheme.typography.body2,
-                                modifier = Modifier.padding(start = 30.dp, top = 4.dp)
+                                modifier = Modifier.padding(start = 30.dp)
                             )
                         }
                     }
@@ -195,7 +285,9 @@ fun ExpandableContent() {
             color = Color(0xFF07C0BA)
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Nexito 10mg")
+            Text("Nexito 10mg", style = MaterialTheme.typography.body1.copy(
+                fontWeight = FontWeight.Bold  // Sets the text to be bold
+            ) )
             Spacer(Modifier.weight(1f))
             Checkbox(
                 checked = morningChecked,
@@ -213,7 +305,9 @@ fun ExpandableContent() {
             color = Color(0xFF07C0BA)
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Escitalopram 15mg")
+            Text("Escitalopram 15mg", style = MaterialTheme.typography.body1.copy(
+                fontWeight = FontWeight.Bold  // Sets the text to be bold
+            ) )
             Spacer(Modifier.weight(1f))
             Checkbox(
                 checked = nightChecked,
