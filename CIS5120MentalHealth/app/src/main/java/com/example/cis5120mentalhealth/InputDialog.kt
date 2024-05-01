@@ -113,8 +113,22 @@ fun SummaryDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                         text = "Recorded mood so far:",
                         style = MaterialTheme.typography.body1
                     )
+
                     Text(
                         text = "Today: \uD83D\uDE41",
+                        style = MaterialTheme.typography.body1
+                    )
+                    Text(
+                        text = "You are sad.",
+                        style = MaterialTheme.typography.body1
+                    )
+                    Text(
+                        text = "You have a headache.",
+                        style = MaterialTheme.typography.body1
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Yesterday: \uD83D\uDE41",
                         style = MaterialTheme.typography.body1
                     )
                     Text(

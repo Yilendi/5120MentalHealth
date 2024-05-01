@@ -134,7 +134,11 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                                 Text("Symptoms", color = Color.Black, style = MaterialTheme.typography.body2)
                             }
                             Spacer(modifier = Modifier.weight(1f))
-                            Text("Create your own")
+                            Text(
+                                text = "Create your own",
+                                fontWeight = FontWeight.Medium
+
+                            )
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(
@@ -153,7 +157,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                                 viewModel.checkedStatesGroup1[symptom] = isChecked
                             }
                         )
-
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             "Additional Symptoms",
                             style = MaterialTheme.typography.subtitle1,

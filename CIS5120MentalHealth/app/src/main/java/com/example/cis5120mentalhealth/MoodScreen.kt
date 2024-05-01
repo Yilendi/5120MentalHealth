@@ -121,7 +121,8 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
             Text(
                 smallTexts[currentIndex],
                 style = MaterialTheme.typography.body2,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(80.dp))
@@ -173,11 +174,12 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
         }
 
         Text(
-            text = "Done",
+            text = "Close",
             modifier = Modifier
                 .padding(top = 12.dp, end = 16.dp)
                 .clickable { onDoneClicked() },
-            color = Color.Black
+            color = Color.Black,
+            fontWeight = FontWeight.Medium
         )
     }
 }

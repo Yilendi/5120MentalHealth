@@ -1,7 +1,9 @@
 package com.example.cis5120mentalhealth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -139,17 +142,30 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             .background(Color(0xFFFAF7EF)) // Hex color code for background
             .clip(RoundedCornerShape(14.dp))
     ) {
-        Box(
-            modifier = Modifier
-                .padding(start = 12.dp, top = 12.dp)
-                .size(width = 91.dp, height = 26.dp)
-                .background(Color.Black, RoundedCornerShape(8.dp)),
-            contentAlignment = Alignment.Center
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+                .wrapContentHeight()
         ) {
+            Box(
+                modifier = Modifier
+                    .padding(start = 12.dp, top = 12.dp)
+                    .size(width = 91.dp, height = 26.dp)
+                    .background(Color.Black, RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "2 OF 14 DAYS",
+                    color = Color.White,
+                    style = MaterialTheme.typography.body2.copy(fontSize = 12.sp)  // Smaller font size
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "2 OF 14 DAYS",
-                color = Color.White,
-                style = MaterialTheme.typography.body2.copy(fontSize = 12.sp)  // Smaller font size
+                text = "Edit",
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .padding(end = 16.dp)
             )
         }
 
@@ -223,53 +239,59 @@ fun ScrollableEmojisRow() {
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         emojiList.forEach { (emoji, description) ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 4.dp)  // Half of 8dp to get even spacing on both sides
+
+            Card(
+                elevation = 6.dp,  // Apply elevation here
+                shape = CircleShape,  // Ensures the card itself is also circular
+                modifier = Modifier.size(88.dp)  // Size of the circle card
             ) {
                 Box(
                     modifier = Modifier
-                        .size(88.dp)
-                        .clip(CircleShape)
-                        .background(if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color.Transparent)
-                        .clickable { selectedEmoji = emoji }
-                        .shadow(4.dp, CircleShape),
+                        .background(if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color(0xFFFAF7EF))  // Background color changes if selected
+                        .clickable { selectedEmoji = emoji },  // Click action
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = emoji,
-                        fontSize = 28.sp
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(horizontal = 4.dp)  // Half of 8dp to get even spacing on both sides
+                    ) {
+                        Text(
+                            text = emoji,
+                            fontSize = 28.sp,  // Font size for the emoji
+                            color = Color.Black  // Ensuring the text color is specified
+                        )
+                        Text(
+                            text = description,
+                            textAlign = TextAlign.Center,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
                 }
-                // Description text under the emoji
-                Text(
-                    text = description,
-                    textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+
             }
+            Spacer(modifier = Modifier.width(8.dp))
         }
-        // Add button to the row
-        IconButton(
-            onClick = { /* Define what happens when you click the add button */ },
-            modifier = Modifier
-                .size(26.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFEFEBE1)),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add",
-                tint = Color.Black,
-                modifier = Modifier.size(18.dp)
-            )
-        }
+//        // Add button to the row
+//        IconButton(
+//            onClick = { /* Define what happens when you click the add button */ },
+//            modifier = Modifier
+//                .size(26.dp)
+//                .clip(CircleShape)
+//                .background(Color(0xFFEFEBE1)),
+//        ) {
+//            Icon(
+//                imageVector = Icons.Default.Add,
+//                contentDescription = "Add",
+//                tint = Color.Black,
+//                modifier = Modifier.size(18.dp)
+//            )
+//        }
     }
 }
 
