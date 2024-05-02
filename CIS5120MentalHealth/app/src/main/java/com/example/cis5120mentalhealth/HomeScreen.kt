@@ -205,12 +205,12 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .height(if (isExpanded) 232.dp else 86.dp), // Adjust height based on expanded state
+            .height(if (isExpanded) 232.dp else 94.dp), // Adjust height based on expanded state
         elevation = 2.dp,
         backgroundColor = Color(0xFFFAF7EF)
     ) {
         Column {
-            Row(modifier = Modifier.height(86.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.height(94.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .weight(1f)

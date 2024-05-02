@@ -166,7 +166,7 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                         color = Color(0xFF07C0BA),
                         modifier = Modifier
                             .clickable { if (currentIndex < 3) currentIndex += 1 }
-                            .padding(16.dp),
+                            .padding(end = 8.dp),
                         textAlign = TextAlign.Right
                     )
                 }
