@@ -136,7 +136,8 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                 onDoneClicked = onDoneClicked
             )
 
-            Spacer(modifier = Modifier.height(121.dp))
+//            Spacer(modifier = Modifier.height(121.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             // Three small dots
             // Dots
@@ -144,9 +145,10 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                 NavigationDots(currentIndex = currentIndex, total = 3)
             }
             // Bottom navigation arrows and texts
-            Spacer(modifier = Modifier.weight(1f))
+//            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -166,7 +168,7 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                         color = Color(0xFF07C0BA),
                         modifier = Modifier
                             .clickable { if (currentIndex < 3) currentIndex += 1 }
-                            .padding(end = 8.dp),
+                            .padding(end = 16.dp),
                         textAlign = TextAlign.Right
                     )
                 }
