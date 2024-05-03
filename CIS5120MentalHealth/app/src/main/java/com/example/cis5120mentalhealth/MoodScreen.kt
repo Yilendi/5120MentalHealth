@@ -3,6 +3,7 @@ package com.example.cis5120mentalhealth
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -28,11 +30,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,6 +78,7 @@ fun MoodScreenWithOverlay(viewModel: SymptomsViewModel, navController: NavContro
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetContent(onDoneClicked: () -> Unit) {
 
@@ -88,16 +94,40 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
 
     val buttonTexts = arrayOf("Get Started", "Number of times a day", "Number of days", "Enable Notifications")
 
+    // Gesture detection
+    val swipeableState = rememberSwipeableState(initialValue = 0)
+    val sizePx = with(LocalDensity.current) { 707.dp.toPx() }
+    val anchors = mapOf(-sizePx to -1, 0f to 0, sizePx to 1)
+
     Box(
         modifier = Modifier
             .height(707.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(Color.White),
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
         contentAlignment = Alignment.TopEnd
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .swipeable(
+                    state = swipeableState,
+                    anchors = anchors,
+                    thresholds = { _, _ -> FractionalThreshold(0.3f) },
+                    orientation = Orientation.Horizontal
+                )
+        ) {
             Spacer(modifier = Modifier.height(72.dp))
+
+            // Detect swipe direction and change index
+            LaunchedEffect(swipeableState.currentValue) {
+                when (swipeableState.currentValue) {
+                    -1 -> if (currentIndex < 3) currentIndex++
+                    1 -> if (currentIndex > 0) currentIndex--
+                }
+                swipeableState.snapTo(0) // Reset swipeable state to center
+            }
 
             Icon(
                 painter = painterResource(id = R.drawable.img_mood_track), // Example icon, replace with your choice
@@ -169,7 +199,8 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                         modifier = Modifier
                             .clickable { if (currentIndex < 3) currentIndex += 1 }
                             .padding(end = 16.dp),
-                        textAlign = TextAlign.Right
+                        textAlign = TextAlign.Right,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
