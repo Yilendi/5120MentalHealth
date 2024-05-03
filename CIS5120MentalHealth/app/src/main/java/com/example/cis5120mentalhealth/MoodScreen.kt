@@ -1,9 +1,9 @@
 package com.example.cis5120mentalhealth
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,27 +16,28 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,8 +47,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -56,7 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MoodScreenWithOverlay(navController: NavController) {
+fun MoodScreenWithOverlay(viewModel: SymptomsViewModel, navController: NavController) {
 
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Expanded)
     val scope = rememberCoroutineScope()
@@ -72,17 +74,15 @@ fun MoodScreenWithOverlay(navController: NavController) {
         },
         scrimColor = Color.Transparent
     ) {
-        MoodScreen(navController)
+        MoodScreen(viewModel, navController)
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetContent(onDoneClicked: () -> Unit) {
 
     var currentIndex by remember { mutableStateOf(0) }
-
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedNumber by remember { mutableStateOf(1) }
 
     // Arrays for texts based on index
     val smallTexts = arrayOf(
@@ -92,18 +92,42 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
         "You are so close to finish setting up your mood tracker. Would you like to get reminders to fill in your mood tracker?"
     )
 
-    val buttonTexts = arrayOf("Get Started", "Select", "Input Number of Weeks", "Enable Notifications")
+    val buttonTexts = arrayOf("Get Started", "Number of times a day", "Number of days", "Enable Notifications")
+
+    // Gesture detection
+    val swipeableState = rememberSwipeableState(initialValue = 0)
+    val sizePx = with(LocalDensity.current) { 707.dp.toPx() }
+    val anchors = mapOf(-sizePx to -1, 0f to 0, sizePx to 1)
 
     Box(
         modifier = Modifier
             .height(707.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            .background(Color.White),
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
         contentAlignment = Alignment.TopEnd
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .swipeable(
+                    state = swipeableState,
+                    anchors = anchors,
+                    thresholds = { _, _ -> FractionalThreshold(0.3f) },
+                    orientation = Orientation.Horizontal
+                )
+        ) {
             Spacer(modifier = Modifier.height(72.dp))
+
+            // Detect swipe direction and change index
+            LaunchedEffect(swipeableState.currentValue) {
+                when (swipeableState.currentValue) {
+                    -1 -> if (currentIndex < 3) currentIndex++
+                    1 -> if (currentIndex > 0) currentIndex--
+                }
+                swipeableState.snapTo(0) // Reset swipeable state to center
+            }
 
             Icon(
                 painter = painterResource(id = R.drawable.img_mood_track), // Example icon, replace with your choice
@@ -127,35 +151,23 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
             Text(
                 smallTexts[currentIndex],
                 style = MaterialTheme.typography.body2,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(80.dp))
 
-            CustomButton(
+            MoodCustomButton(
                 currentIndex = currentIndex, // Assuming you have a currentIndex state in your composable
                 updateIndex = { newIndex ->
                     currentIndex = newIndex // Update your state with the new index
                 },
-                buttonTexts = buttonTexts, // Example button texts
-                onAdditionalAction = {
-                    showDialog = true
-                }
-
+                buttonTexts = buttonTexts,
+                onDoneClicked = onDoneClicked
             )
 
-            NumberPickerDialog(
-                showDialog = showDialog,
-                onNumberSelected = { number ->
-                    selectedNumber = number
-                },
-                onDismiss = {
-                    showDialog = false
-                    if (currentIndex < buttonTexts.size - 1) currentIndex++
-                }
-            )
-
-            Spacer(modifier = Modifier.height(121.dp))
+//            Spacer(modifier = Modifier.height(121.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             // Three small dots
             // Dots
@@ -163,9 +175,10 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                 NavigationDots(currentIndex = currentIndex, total = 3)
             }
             // Bottom navigation arrows and texts
-            Spacer(modifier = Modifier.weight(1f))
+//            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -185,56 +198,114 @@ fun BottomSheetContent(onDoneClicked: () -> Unit) {
                         color = Color(0xFF07C0BA),
                         modifier = Modifier
                             .clickable { if (currentIndex < 3) currentIndex += 1 }
-                            .padding(16.dp),
-                        textAlign = TextAlign.Right
+                            .padding(end = 16.dp),
+                        textAlign = TextAlign.Right,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
         }
 
         Text(
-            text = "Done",
+            text = "Close",
             modifier = Modifier
-                .padding(top = 12.dp , end = 16.dp)
+                .padding(top = 12.dp, end = 16.dp)
                 .clickable { onDoneClicked() },
-            color = Color.Black
+            color = Color.Black,
+            fontWeight = FontWeight.Medium
         )
     }
 }
 
 @Composable
-fun CustomButton(
+fun MoodCustomButton(
     currentIndex: Int,
     updateIndex: (Int) -> Unit,
     buttonTexts: Array<String>,
-    onAdditionalAction: () -> Unit
+    onDoneClicked: () -> Unit
 ) {
-    if (currentIndex == 0) {
-        Button(
-            onClick = { updateIndex(currentIndex + 1) },
-            modifier = Modifier
-                .size(width = 241.dp, height = 46.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF07C0BA))
-        ) {
-            Text(buttonTexts[currentIndex], color = Color.White)
-        }
-    } else {
-        OutlinedButton(
-            onClick = {
-                if (currentIndex < 3) onAdditionalAction()
-            },
-            modifier = Modifier
-                .size(width = 241.dp, height = 46.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            ),
-            border = BorderStroke(1.dp, Color.Black)
-        ) {
-            Text(buttonTexts[currentIndex], color = Color.Black)
+    var expanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf("Select") }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        if (currentIndex == 0) {
+            Button(
+                onClick = { updateIndex(currentIndex + 1) },
+                modifier = Modifier
+                    .size(width = 293.dp, height = 52.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF07C0BA))
+            ) {
+                Text(buttonTexts[currentIndex], color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        } else if (currentIndex < 3){
+            Text(
+                text = buttonTexts[currentIndex],
+                color = Color.Black,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 25.dp, bottom = 8.dp)
+            )
+
+            OutlinedButton(
+                onClick = { expanded = true },
+                modifier = Modifier
+                    .size(width = 293.dp, height = 52.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ),
+                border = BorderStroke(1.dp, Color.Black)
+            ) {
+                Text(selectedText, color = Color.Black, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "Dropdown",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(293.dp)
+                    .padding(top = 4.dp)
+            ) {
+                (1..5).forEach { index ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedText = "$index"
+                            expanded = false
+                        },
+                        text = {Text("$index")}
+                    )
+                }
+            }
+        } else {
+            Button(
+                onClick = {  },
+                modifier = Modifier
+                    .size(width = 293.dp, height = 52.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD1FAF2))
+            ) {
+                Text(buttonTexts[currentIndex], color = Color.Black, fontWeight = FontWeight.Bold)
+            }
+            Text(
+                text = "Skip",
+                color = Color.Gray,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 24.dp)
+                    .clickable {
+                        onDoneClicked()
+                    }
+            )
+
         }
     }
 }
+
 
 @Composable
 fun NavigationDots(currentIndex: Int, total: Int) {
