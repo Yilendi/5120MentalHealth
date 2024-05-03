@@ -196,6 +196,8 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                                     // Avoid multiple copies of the same destination when reselecting the same item
                                     launchSingleTop = true
                                 }
+                            } else {
+                                navController.navigateUp()
                             }
 
                         },
