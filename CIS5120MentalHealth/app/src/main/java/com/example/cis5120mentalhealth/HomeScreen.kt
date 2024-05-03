@@ -13,6 +13,7 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
@@ -47,7 +49,6 @@ import com.example.cis5120mentalhealth.ui.theme.CIS5120MentalHealthTheme
 
 @Composable
 fun HomeScreenView(navController: NavController, viewModel: SymptomsViewModel) {
-
     val item = ItemDetails(
         title = "Record Medicine Intake",
         description = "Keep a track of the medicines you take throughout the day.",
@@ -62,67 +63,61 @@ fun HomeScreenView(navController: NavController, viewModel: SymptomsViewModel) {
         action = "go"
     )
 
-    val showCard = viewModel.showCard
-
-
+    val showCard = viewModel.showCard.value
     val scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState) // Makes the Column scrollable
-            .padding(24.dp)  // Apply padding to the overall Column
-    ) {
-        // Top Box - Greeting
-        Box(
+    Box(modifier = Modifier.fillMaxSize()) { // Enclosing Box to hold both Column and FAB
+        Column(
             modifier = Modifier
-                .height(134.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(24.dp)
         ) {
-            Column {
-                Text(
-                    text = "Good Afternoon, ",
-                    fontSize = 28.sp,
-                    color = Color.Black // Keeps the default color for the initial part
-                )
-                Text(
-                    text = "Sarina!",
-                    fontSize = 28.sp,
-                    color = Color(0xFF07C0BA) // Changes Sarina's name to green
-                )
-                Spacer( Modifier.weight(1f))
-
-                Text(
-                    text = "Here is your health dashboard based on your health screening.",
-                    fontSize = 18.sp,
-                    color = Color.Black, // Keeps the color for smaller text
-                )
-            }
-
-        }
-        Spacer(Modifier.height(40.dp))
-
-        if (showCard.value) {
-             ProgressCard(
-                onClose = {
-                    // Set the state to false when the close icon is clicked
-                    viewModel.setShowCard(false)
+            Box(
+                modifier = Modifier
+                    .height(134.dp)
+                    .fillMaxWidth()
+            ) {
+                Column {
+                    Text(
+                        text = "Good Afternoon, ",
+                        fontSize = 28.sp,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = "Sarina!",
+                        fontSize = 28.sp,
+                        color = Color(0xFF07C0BA)
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = "Here is your health dashboard based on your health screening.",
+                        fontSize = 18.sp,
+                        color = Color.Black
+                    )
                 }
-            )
+            }
+            Spacer(Modifier.height(40.dp))
+            if (showCard) {
+                ProgressCard(onClose = { viewModel.setShowCard(false) })
+            }
+            Spacer(Modifier.height(32.dp))
+            HealthCard(item = item, navController = navController)
+            Spacer(Modifier.height(28.dp))
+            HealthCard(item = item2, navController = navController)
         }
 
-        Spacer(Modifier.height(32.dp))
-        // First Card
-        HealthCard(item, navController)
-
-        // Spacer between the cards
-        Spacer(modifier = Modifier.height(28.dp))
-
-        // Second Card
-        HealthCard(item2, navController)
+        FloatingActionButton(
+            onClick = { viewModel.reset() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd) // Aligns FAB to the bottom end within the Box
+                .padding(16.dp), // Adds padding from the edges
+            backgroundColor = Color(0xFF07C0BA)
+        ) {
+            Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
+        }
     }
 }
-
 
 @Composable
 fun ProgressCard(onClose: () -> Unit) {

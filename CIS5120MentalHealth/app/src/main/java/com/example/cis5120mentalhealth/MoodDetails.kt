@@ -180,7 +180,7 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             // Scrollable row of images
-            ScrollableEmojisRow()
+            ScrollableEmojisRow(viewModel)
 
             Spacer(modifier = Modifier.height(28.dp))
 
@@ -225,18 +225,10 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
 }
 
 @Composable
-fun ScrollableEmojisRow() {
-    val emojiList = listOf(
-        "\uD83D\uDE42" to "Happy",
-        "\uD83D\uDE03" to "Calm",
-        "\uD83D\uDE10" to "Moody",
-        "\uD83D\uDE28" to "Dizzy",
-        "\uD83D\uDE29" to "Weary",
-        "\uD83D\uDE41" to "Disturbed"
+fun ScrollableEmojisRow(viewModel: SymptomsViewModel) {
 
-    )
-    // State to track the selected emoji
-    var selectedEmoji by rememberSaveable { mutableStateOf<String?>(null) }
+    val emojiList = viewModel.emojiList
+    val selectedEmoji = viewModel.selectedEmoji
 
     Row(
         modifier = Modifier
@@ -258,7 +250,7 @@ fun ScrollableEmojisRow() {
                                 0xFFFAF7EF
                             )
                         )  // Background color changes if selected
-                        .clickable { selectedEmoji = if (selectedEmoji == emoji) null else emoji },  // Click action
+                        .clickable { viewModel.selectedEmoji = if (selectedEmoji == emoji) null else emoji },  // Click action
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
