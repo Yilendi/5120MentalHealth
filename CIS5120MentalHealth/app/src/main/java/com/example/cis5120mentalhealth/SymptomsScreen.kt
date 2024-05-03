@@ -63,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -177,13 +178,27 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
 
                     }
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+
+                Spacer(modifier = Modifier.weight(1f))
                 Box(
                     contentAlignment = Alignment.Center, // Centers the contents within the Box
                     modifier = Modifier.fillMaxWidth() // Ensures the Box fills the available space
                 ) {
                     OutlinedButton(
-                        onClick = { navController.navigateUp() },
+                        onClick = {
+                            if (viewModel.isAnySymptomChecked()) {
+                                viewModel.setShowCard(true)
+                                navController.navigate("home") {
+                                    // Pop up to the start destination of the NavHost (clearing the entire back stack)
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        inclusive = true
+                                    }
+                                    // Avoid multiple copies of the same destination when reselecting the same item
+                                    launchSingleTop = true
+                                }
+                            }
+
+                        },
                         modifier = Modifier
                             .size(width = 241.dp, height = 46.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -195,6 +210,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                         Text("Done", color = Color.Black)
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
 
             }
         }

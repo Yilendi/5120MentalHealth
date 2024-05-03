@@ -43,7 +43,7 @@ import androidx.navigation.NavController
 import com.example.cis5120mentalhealth.ui.theme.CIS5120MentalHealthTheme
 
 @Composable
-fun HomeScreenView(navController: NavController) {
+fun HomeScreenView(navController: NavController, viewModel: SymptomsViewModel) {
 
     val item = ItemDetails(
         title = "Record Medicine Intake",
@@ -59,7 +59,7 @@ fun HomeScreenView(navController: NavController) {
         action = "go"
     )
 
-    var showCard by remember { mutableStateOf(true) }
+    val showCard = viewModel.showCard
 
 
     val scrollState = rememberScrollState()
@@ -99,11 +99,11 @@ fun HomeScreenView(navController: NavController) {
         }
         Spacer(Modifier.height(40.dp))
 
-        if (showCard) {
+        if (showCard.value) {
              ProgressCard(
                 onClose = {
                     // Set the state to false when the close icon is clicked
-                    showCard = false
+                    viewModel.setShowCard(false)
                 }
             )
         }

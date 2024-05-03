@@ -85,7 +85,7 @@ fun mainAppGraph(navController: NavHostController) {
         NavHost(navController = navController, startDestination = "home", modifier = Modifier.padding(paddingValues)) {
             composable("home") {
 
-                HomeScreenView(navController)
+                HomeScreenView(navController, viewModel)
             }
             composable("summary") {
                 MoodTrackerView()
