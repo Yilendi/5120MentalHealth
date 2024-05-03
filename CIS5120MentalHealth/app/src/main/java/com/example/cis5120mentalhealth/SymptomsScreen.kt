@@ -132,7 +132,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                                     .background(Color(0xFFEFEBE1), RoundedCornerShape(8.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text("Symptoms", color = Color.Black, style = MaterialTheme.typography.body2)
+                                Text("SYMPTOMS", color = Color.Black, style = MaterialTheme.typography.body2)
                             }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
@@ -143,7 +143,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                         Text(
-                            "Recent",
+                            "RECENT",
                             style = MaterialTheme.typography.subtitle1,
                             color = Color(0xFF07C0BA)
                         )
@@ -160,7 +160,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "Additional Symptoms",
+                            "ADDITIONAL SYMPTOMS",
                             style = MaterialTheme.typography.subtitle1,
                             color = Color(0xFF07C0BA)
                         )

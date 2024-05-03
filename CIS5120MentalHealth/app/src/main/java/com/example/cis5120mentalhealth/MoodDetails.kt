@@ -172,7 +172,7 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
         Column(modifier = Modifier.padding(16.dp)) {
             Spacer(modifier = Modifier.height(46.dp))
             // "mood" section
-            Text("Mood", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
+            Text("MOOD", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
@@ -183,7 +183,7 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Symptoms" section
-            Text("Other Symptoms", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
+            Text("OTHER SYMPTOMS", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))
@@ -198,7 +198,7 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(28.dp))
 
             // "Notes" section
-            Text("Add Notes", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
+            Text("ADD NOTES", style = MaterialTheme.typography.subtitle1, color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(4.dp))
             Divider(color = Color(0xFF07C0BA))
             Spacer(modifier = Modifier.height(8.dp))

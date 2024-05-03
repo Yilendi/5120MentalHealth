@@ -12,7 +12,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -24,6 +26,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -140,7 +143,7 @@ fun ProgressCard(onClose: () -> Unit) {
                     .background(Color(0xFFD1FAF2), RoundedCornerShape(4.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Progress", color = Color.Black, style = MaterialTheme.typography.body2)
+                Text("PROGRESS", color = Color.Black, style = MaterialTheme.typography.body2)
             }
 
             // Icon for closing the card
@@ -205,7 +208,7 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .height(if (isExpanded) 248.dp else 94.dp), // Adjust height based on expanded state
+            .height(if (isExpanded) 274.dp else 94.dp), // Adjust height based on expanded state
         elevation = 2.dp,
         backgroundColor = Color(0xFFFAF7EF)
     ) {
@@ -268,52 +271,83 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandableContent() {
     var morningChecked by remember { mutableStateOf(false) }
     var nightChecked by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(start = 40.dp, end = 12.dp)) {
+    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(width = 91.dp, height = 22.dp)
+                    .background(Color(0xFFD1FAF2), RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("MEDICATION", color = Color.Black, fontSize = 12.sp)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "Edit",
+                fontWeight = FontWeight.Medium
+
+            )
+        }
+        Spacer(Modifier.weight(1f))
         Text(
-            "Morning",
+            "MORNING",
             color = Color(0xFF07C0BA)
         )
         Divider(
             modifier = Modifier
-                .width(291.dp)
-                .padding(vertical = 4.dp),
+                .width(339.dp),
             color = Color(0xFF07C0BA)
         )
+        Spacer(Modifier.weight(1f))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Nexito 10mg", style = MaterialTheme.typography.body1.copy(
                 fontWeight = FontWeight.Bold  // Sets the text to be bold
             ) )
             Spacer(Modifier.weight(1f))
-            Checkbox(
-                checked = morningChecked,
-                onCheckedChange = { morningChecked = it }
-            )
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                Checkbox(
+                    checked = morningChecked,
+                    onCheckedChange = { morningChecked = it },
+                    modifier = Modifier.padding(0.dp)  // Explicitly setting padding to zero
+                )
+            }
         }
+        Spacer(Modifier.weight(1f))
         Text(
-            "Night",
+            "NIGHT",
             color = Color(0xFF07C0BA)
         )
         Divider(
             modifier = Modifier
-                .width(291.dp)
-                .padding(vertical = 4.dp),
+                .width(339.dp),
             color = Color(0xFF07C0BA)
         )
+        Spacer(Modifier.weight(1f))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Escitalopram 15mg", style = MaterialTheme.typography.body1.copy(
                 fontWeight = FontWeight.Bold  // Sets the text to be bold
             ) )
             Spacer(Modifier.weight(1f))
-            Checkbox(
-                checked = nightChecked,
-                onCheckedChange = { nightChecked = it } // Update state when checkbox is toggled
-            )
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                Checkbox(
+                    checked = nightChecked,
+                    onCheckedChange = { nightChecked = it },
+                    modifier = Modifier.padding(0.dp)  // Explicitly setting padding to zerod
+                )
+            }
+
         }
+        Spacer(Modifier.weight(1f))
     }
 }
 
