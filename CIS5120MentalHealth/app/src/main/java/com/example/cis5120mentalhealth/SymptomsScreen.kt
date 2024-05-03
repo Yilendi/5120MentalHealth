@@ -197,6 +197,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                                     launchSingleTop = true
                                 }
                             } else {
+                                viewModel.setShowCard(false)
                                 navController.navigateUp()
                             }
 
