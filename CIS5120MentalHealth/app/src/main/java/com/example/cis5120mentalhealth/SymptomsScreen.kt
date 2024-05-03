@@ -102,7 +102,7 @@ fun SymptomsScreen(viewModel: SymptomsViewModel, navController: NavController) {
                     .background(Color(0xFFFAF7EF))
             ) {
                 Text(
-                    text = "Today $formattedDate",
+                    text = "Today, $formattedDate",
                     style = MaterialTheme.typography.h6, // large text
                     modifier = Modifier.align(Alignment.Start)
                 )

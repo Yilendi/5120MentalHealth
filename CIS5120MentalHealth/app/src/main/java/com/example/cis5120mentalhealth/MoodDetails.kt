@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -144,7 +145,8 @@ fun MoodOverview(viewModel: SymptomsViewModel, navController: NavController) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .wrapContentHeight()
         ) {
             Box(
@@ -234,7 +236,7 @@ fun ScrollableEmojisRow() {
 
     )
     // State to track the selected emoji
-    var selectedEmoji by remember { mutableStateOf<String?>(null) }
+    var selectedEmoji by rememberSaveable { mutableStateOf<String?>(null) }
 
     Row(
         modifier = Modifier
@@ -251,8 +253,12 @@ fun ScrollableEmojisRow() {
             ) {
                 Box(
                     modifier = Modifier
-                        .background(if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color(0xFFFAF7EF))  // Background color changes if selected
-                        .clickable { selectedEmoji = emoji },  // Click action
+                        .background(
+                            if (emoji == selectedEmoji) Color(0xFFD1FAF2) else Color(
+                                0xFFFAF7EF
+                            )
+                        )  // Background color changes if selected
+                        .clickable { selectedEmoji = if (selectedEmoji == emoji) null else emoji },  // Click action
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -277,21 +283,7 @@ fun ScrollableEmojisRow() {
             }
             Spacer(modifier = Modifier.width(8.dp))
         }
-//        // Add button to the row
-//        IconButton(
-//            onClick = { /* Define what happens when you click the add button */ },
-//            modifier = Modifier
-//                .size(26.dp)
-//                .clip(CircleShape)
-//                .background(Color(0xFFEFEBE1)),
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.Add,
-//                contentDescription = "Add",
-//                tint = Color.Black,
-//                modifier = Modifier.size(18.dp)
-//            )
-//        }
+
     }
 }
 

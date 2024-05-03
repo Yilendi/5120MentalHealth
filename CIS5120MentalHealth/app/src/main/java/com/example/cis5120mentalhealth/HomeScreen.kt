@@ -76,7 +76,7 @@ fun HomeScreenView(navController: NavController, viewModel: SymptomsViewModel) {
         // Top Box - Greeting
         Box(
             modifier = Modifier
-                .height(126.dp)
+                .height(134.dp)
                 .fillMaxWidth()
         ) {
             Column {
@@ -131,7 +131,7 @@ fun ProgressCard(onClose: () -> Unit) {
             .fillMaxWidth()
             .height(210.dp),
         shape = RoundedCornerShape(12.dp), // Rounded corners
-        elevation = 2.dp,
+//        elevation = 2.dp,
         backgroundColor = Color(0xFFFAF7EF)
     ) {
         Box {
@@ -209,7 +209,7 @@ fun HealthCard(item: ItemDetails, navController: NavController) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .height(if (isExpanded) 274.dp else 94.dp), // Adjust height based on expanded state
-        elevation = 2.dp,
+//        elevation = 2.dp,
         backgroundColor = Color(0xFFFAF7EF)
     ) {
         Column {
@@ -285,11 +285,11 @@ fun ExpandableContent() {
         ) {
             Box(
                 modifier = Modifier
-                    .size(width = 91.dp, height = 22.dp)
+                    .size(width = 100.dp, height = 26.dp)
                     .background(Color(0xFFD1FAF2), RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("MEDICATION", color = Color.Black, fontSize = 12.sp)
+                Text("MEDICATION", color = Color.Black, style = MaterialTheme.typography.body2)
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
