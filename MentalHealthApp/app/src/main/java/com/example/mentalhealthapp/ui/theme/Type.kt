@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth.ui.theme
+package com.example.mentalhealthapp.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

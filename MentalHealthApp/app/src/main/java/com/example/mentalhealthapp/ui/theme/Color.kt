@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth.ui.theme
+package com.example.mentalhealthapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
