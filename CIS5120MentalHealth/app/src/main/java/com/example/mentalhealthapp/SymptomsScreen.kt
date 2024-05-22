@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth
+package com.example.mentalhealthapp
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi

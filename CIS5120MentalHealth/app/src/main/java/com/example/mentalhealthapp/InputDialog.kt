@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth
+package com.example.mentalhealthapp
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

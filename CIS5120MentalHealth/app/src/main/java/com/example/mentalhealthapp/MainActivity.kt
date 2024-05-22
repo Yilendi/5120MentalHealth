@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth
+package com.example.mentalhealthapp
 
 import android.os.Build
 import android.os.Bundle
@@ -40,7 +40,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.cis5120mentalhealth.ui.theme.CIS5120MentalHealthTheme
+import com.example.cis5120mentalhealth.R
+import com.example.mentalhealthapp.ui.theme.CIS5120MentalHealthTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

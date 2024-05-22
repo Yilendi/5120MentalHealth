@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth
+package com.example.mentalhealthapp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,7 +45,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.cis5120mentalhealth.ui.theme.CIS5120MentalHealthTheme
+import com.example.cis5120mentalhealth.R
+import com.example.mentalhealthapp.ui.theme.CIS5120MentalHealthTheme
 
 @Composable
 fun HomeScreenView(navController: NavController, viewModel: SymptomsViewModel) {

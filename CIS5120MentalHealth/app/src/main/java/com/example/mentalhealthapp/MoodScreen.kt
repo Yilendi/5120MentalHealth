@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth
+package com.example.mentalhealthapp
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cis5120mentalhealth.R
 import kotlinx.coroutines.launch
 
 

@@ -1,4 +1,4 @@
-package com.example.cis5120mentalhealth
+package com.example.mentalhealthapp
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
